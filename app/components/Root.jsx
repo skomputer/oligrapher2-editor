@@ -4,8 +4,10 @@ import { HotKeys } from 'react-hotkeys';
 import ZoomButtons from './ZoomButtons';
 import AddNodeForm from './AddNodeForm';
 import AddEdgeForm from './AddEdgeForm';
+import AddCaptionForm from './AddCaptionForm';
 import UpdateNodeForm from './UpdateNodeForm';
 import UpdateEdgeForm from './UpdateEdgeForm';
+import UpdateCaptionForm from './UpdateCaptionForm';
 
 export default class Root extends Component {
   constructor(props) {
@@ -18,20 +20,24 @@ export default class Root extends Component {
     let zoomIn = () => oli.zoomIn();
     let zoomOut = () => oli.zoomOut();
     let addNode = (node) => oli.addNode(node);
-    let addEdge = (node) => oli.addEdge(node);
+    let addEdge = (edge) => oli.addEdge(edge);
+    let addCaption = (caption) => oli.addCaption(caption);
     let getGraph = () => oli.export();
     let updateNode = (nodeId, data) => oli.updateNode(nodeId, data);
     let updateEdge = (edgeId, data) => oli.updateEdge(edgeId, data);
+    let updateCaption = (captionId, data) => oli.updateCaption(captionId, data);
 
     const keyMap = { 
       'altN': 'alt+n',
       'altE': 'alt+e',
+      'altC': 'alt+c',
       'esc': 'esc'
     };
 
     const keyHandlers = {
       'altN': () => this._toggleNodeForm(),
       'altE': () => this._toggleEdgeForm(),
+      'altC': () => this._toggleCaptionForm(),
       'esc': () => this.setState({ currentForm: null })
     };
 
@@ -46,10 +52,14 @@ export default class Root extends Component {
             <AddNodeForm addNode={addNode} /> : null }
           { currentForm == 'AddEdgeForm' ? 
             <AddEdgeForm addEdge={addEdge} getGraph={getGraph} selection={selection} /> : null }
+          { currentForm == 'AddCaptionForm' ? 
+            <AddCaptionForm addCaption={addCaption} /> : null }
           { currentForm == 'UpdateNodeForm' ? 
             <UpdateNodeForm updateNode={updateNode} selection={selection} /> : null }
           { currentForm == 'UpdateEdgeForm' ? 
             <UpdateEdgeForm updateEdge={updateEdge} getGraph={getGraph} selection={selection} /> : null }
+          { currentForm == 'UpdateCaptionForm' ? 
+            <UpdateCaptionForm updateCaption={updateCaption} selection={selection} /> : null }
         </HotKeys>
       </div>
     );
@@ -84,6 +94,17 @@ export default class Root extends Component {
     } else if (edgeIds.length == 1) {
       let edge = data.edges[edgeIds[0]];
       this._toggleForm('UpdateEdgeForm', edge);
+    }
+  }
+
+  _toggleCaptionForm() {
+    let captionIds = this.props.oligrapher.getSelection().captionIds;
+
+    if (captionIds.length == 0) {
+      this._toggleForm('AddCaptionForm', null);
+    } else if (captionIds.length == 1) {
+      let caption = this.props.oligrapher.export().captions[captionIds[0]];
+      this._toggleForm('UpdateCaptionForm', caption);
     }
   }
 

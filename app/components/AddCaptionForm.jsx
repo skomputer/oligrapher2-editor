@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import BaseComponent from './BaseComponent';
 
-export default class AddNodeForm extends BaseComponent {
+export default class AddCaptionForm extends BaseComponent {
   constructor(props) {
     super(props);
     this.bindAll('_handleSubmit');
@@ -9,21 +9,21 @@ export default class AddNodeForm extends BaseComponent {
 
   render() {
     return (
-      <div id="addNode" className="editForm">
-        <h3>Add Node</h3>
-        <input type="text" placeholder="name" ref="name" /><br />
+      <div id="addCaption" className="editForm">
+        <h3>Add Caption</h3>
+        <input type="text" placeholder="name" ref="text" /><br />
         <button onClick={this._handleSubmit}>Add</button>
       </div>
     );
   }
 
   _handleSubmit() {
-    let name = this.refs.name.value.trim();
-    this.props.addNode({ display: { name } });
+    let text = this.refs.text.value.trim();
+    this.props.addCaption({ display: { text } });
     this._clear();
   }
 
   _clear() {
-    this.refs.name.value = '';
+    this.refs.text.value = '';
   }
 }
