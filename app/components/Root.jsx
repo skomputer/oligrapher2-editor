@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { HotKeys } from 'react-hotkeys';
 import ZoomButtons from './ZoomButtons';
+import LayoutButtons from './LayoutButtons';
 import AddNodeForm from './AddNodeForm';
 import AddEdgeForm from './AddEdgeForm';
 import AddCaptionForm from './AddCaptionForm';
@@ -17,17 +18,27 @@ export default class Root extends Component {
 
   render() {
     let oli = this.props.oligrapher;
+    
+    let getGraph = () => oli.export();
+
     let zoomIn = () => oli.zoomIn();
     let zoomOut = () => oli.zoomOut();
+    let resetZoom = () => oli.resetZoom();
+    let prune = () => oli.prune();
+    let circleLayout = () => oli.circleLayout();
+    
     let addNode = (node) => oli.addNode(node);
     let addEdge = (edge) => oli.addEdge(edge);
     let addCaption = (caption) => oli.addCaption(caption);
-    let getGraph = () => oli.export();
+
     let updateNode = (nodeId, data) => oli.updateNode(nodeId, data);
     let updateEdge = (edgeId, data) => oli.updateEdge(edgeId, data);
     let updateCaption = (captionId, data) => oli.updateCaption(captionId, data);
 
     const keyMap = { 
+      'altZ': 'alt+z',
+      'altP': 'alt+p',
+      'altO': 'alt+o',
       'altN': 'alt+n',
       'altE': 'alt+e',
       'altC': 'alt+c',
@@ -35,6 +46,9 @@ export default class Root extends Component {
     };
 
     const keyHandlers = {
+      'altZ': () => oli.resetZoom(),
+      'altP': () => oli.prune(),
+      'altO': () => oli.circleLayout(),
       'altN': () => this._toggleNodeForm(),
       'altE': () => this._toggleEdgeForm(),
       'altC': () => this._toggleCaptionForm(),
@@ -46,8 +60,16 @@ export default class Root extends Component {
     return (
       <div id="oligrapherControlsContainer" style={{ height: '100%' }}>
         <HotKeys focused={true} attach={window} keyMap={keyMap} handlers={keyHandlers}>
-          <ZoomButtons zoomIn={zoomIn} zoomOut={zoomOut} />
+          <div id="buttons">
+            <button onClick={zoomIn}>zoom in</button>
+            <button onClick={zoomOut}>zoom out</button>   
+            <button onClick={resetZoom}>reset zoom</button>
+            <button onClick={prune}>prune</button>
+            <button onClick={circleLayout}>circle</button>
+          </div>
+
           { false && currentForm ? <div id="editFormScreen"></div> : null }
+
           { currentForm == 'AddNodeForm' ? 
             <AddNodeForm addNode={addNode} /> : null }
           { currentForm == 'AddEdgeForm' ? 
@@ -63,12 +85,6 @@ export default class Root extends Component {
         </HotKeys>
       </div>
     );
-  }
-
-  componentDidMount() {
-    // let root = ReactDOM.findDOMNode(this);
-    // let elem = root.querySelector('#oligrapher');
-    // this.oli = this.props.oligrapher.run(elem, this.props.config);
   }
 
   _toggleNodeForm() {
