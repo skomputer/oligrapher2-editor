@@ -5,7 +5,7 @@ import { values, sortBy } from 'lodash';
 export default class UpdateEdgeForm extends BaseComponent {
   constructor(props) {
     super(props);
-    this.bindAll('_handleSubmit');
+    this.bindAll('_apply');
   }
 
   render() {
@@ -17,18 +17,33 @@ export default class UpdateEdgeForm extends BaseComponent {
       [3, "3x"]
     ];
 
-    const selectedScale = this.props.selection ? this.props.selection.display.scale : null;
+    const display = this.props.data.display;
+    const selectedScale = this.props.data ? display.scale : null;
 
     return (
       <div className="editForm">
-        <h3>Update Edge</h3>
-        <input type="text" placeholder="label" ref="label" defaultValue={this.props.selection.display.label} /><br />
-        <select defaultValue={selectedScale} ref="scale">
+        <h3>Edit Edge</h3>
+        <input 
+          type="text" 
+          placeholder="label" 
+          ref="label" 
+          defaultValue={display.label} 
+          onChange={this._apply} /><br />
+        <input 
+          type="checkbox" 
+          ref="arrow" 
+          defaultChecked={display.arrow} 
+          onChange={this._apply} /> arrow<br />
+        <input 
+          type="checkbox" 
+          ref="dash" 
+          defaultChecked={display.dash} 
+          onChange={this._apply} /> dash<br />
+        <select defaultValue={selectedScale} ref="scale" onChange={this._apply}>
           { scales.map((scale, i) =>
             <option key={i} value={scale[0]}>{scale[1]}</option>
           ) }
-        </select><br />
-        <button onClick={this._handleSubmit}>Update</button>
+        </select>
       </div>
     );
   }
@@ -43,11 +58,14 @@ export default class UpdateEdgeForm extends BaseComponent {
     this.setState({ nodes })
   }
 
-  _handleSubmit() {
-    if (this.props.selection) {
+  _apply() {
+    if (this.props.data) {
       let label = this.refs.label.value.trim();
-      let scale = parseInt(this.refs.scale.value);
-      this.props.updateEdge(this.props.selection.id, { display: { label, scale } });
+      let arrow = this.refs.arrow.checked;
+      let dash = this.refs.dash.checked;
+      let scale = parseFloat(this.refs.scale.value);
+      console.log(label, arrow, dash, scale);
+      this.props.updateEdge(this.props.data.id, { display: { label, arrow, dash, scale } });
     }
   }
 }

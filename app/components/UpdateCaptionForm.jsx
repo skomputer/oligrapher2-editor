@@ -4,7 +4,7 @@ import BaseComponent from './BaseComponent';
 export default class UpdateCaptionForm extends BaseComponent {
   constructor(props) {
     super(props);
-    this.bindAll('_handleSubmit');
+    this.bindAll('_apply');
   }
 
   render() {
@@ -16,27 +16,30 @@ export default class UpdateCaptionForm extends BaseComponent {
       [3, "3x"]
     ];
 
-    const selectedScale = this.props.selection ? this.props.selection.display.scale : null;
+    const selectedScale = this.props.data ? this.props.data.display.scale : null;
 
     return (
       <div className="editForm">
-        <h3>Update Caption</h3>
-        <input type="text" placeholder="name" ref="text" defaultValue={this.props.selection.display.text} /><br />
-        <select defaultValue={selectedScale} ref="scale">
+        <h3>Edit Caption</h3>
+        <input 
+          type="text" 
+          placeholder="name" 
+          ref="text" defaultValue={this.props.data.display.text} 
+          onChange={this._apply} /><br />
+        <select defaultValue={selectedScale} ref="scale" onChange={this._apply}>
           { scales.map((scale, i) =>
             <option key={i} value={scale[0]}>{scale[1]}</option>
           ) }
         </select><br />
-        <button onClick={this._handleSubmit}>Update</button>
       </div>
     );
   }
 
-  _handleSubmit() {
-    if (this.props.selection) {
+  _apply() {
+    if (this.props.data) {
       let text = this.refs.text.value.trim();
-      let scale = parseInt(this.refs.scale.value);
-      this.props.updateCaption(this.props.selection.id, { display: { text, scale } });
+      let scale = parseFloat(this.refs.scale.value);
+      this.props.updateCaption(this.props.data.id, { display: { text, scale } });
     }
   }
 }

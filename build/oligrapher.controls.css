@@ -19,6 +19,7 @@
 
 .editForm h3 {
   margin-top: 0;
+  margin-bottom: 10px;
 }
 
 .editForm input, .editForm select {

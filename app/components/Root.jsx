@@ -9,31 +9,25 @@ import AddCaptionForm from './AddCaptionForm';
 import UpdateNodeForm from './UpdateNodeForm';
 import UpdateEdgeForm from './UpdateEdgeForm';
 import UpdateCaptionForm from './UpdateCaptionForm';
+import { values, cloneDeep } from 'lodash';
 
 export default class Root extends Component {
   constructor(props) {
     super(props);
-    this.state = { currentForm: null, selection: null };
+    this.initSelection = { nodes: {}, edges: {}, captions: {} };
+    this.state = { addForm: null, selection: this.initSelection };
+    this.currentForm = null;
+    this.formData = null;
   }
 
   render() {
     let oli = this.props.oligrapher;
     
-    let getGraph = () => oli.export();
+    let getGraph = () => this.oli.export();
 
-    let zoomIn = () => oli.zoomIn();
-    let zoomOut = () => oli.zoomOut();
-    let resetZoom = () => oli.resetZoom();
-    let prune = () => oli.prune();
-    let circleLayout = () => oli.circleLayout();
-    
-    let addNode = (node) => oli.addNode(node);
-    let addEdge = (edge) => oli.addEdge(edge);
-    let addCaption = (caption) => oli.addCaption(caption);
-
-    let updateNode = (nodeId, data) => oli.updateNode(nodeId, data);
-    let updateEdge = (edgeId, data) => oli.updateEdge(edgeId, data);
-    let updateCaption = (captionId, data) => oli.updateCaption(captionId, data);
+    let { zoomIn, zoomOut, resetZoom, prune, circleLayout, 
+          addNode, addEdge, addCaption, 
+          updateNode, updateEdge, updateCaption } = this;
 
     const keyMap = { 
       'altZ': 'alt+z',
@@ -46,16 +40,18 @@ export default class Root extends Component {
     };
 
     const keyHandlers = {
-      'altZ': () => oli.resetZoom(),
-      'altP': () => oli.prune(),
-      'altO': () => oli.circleLayout(),
-      'altN': () => this._toggleNodeForm(),
-      'altE': () => this._toggleEdgeForm(),
-      'altC': () => this._toggleCaptionForm(),
-      'esc': () => this.setState({ currentForm: null })
+      'altZ': () => this.resetZoom(),
+      'altP': () => this.prune(),
+      'altO': () => this.circleLayout(),
+      'altN': () => this._toggleAddForm('AddNodeForm'),
+      'altE': () => this._toggleAddForm('AddEdgeForm'),
+      'altC': () => this._toggleAddForm('AddCaptionForm'),
+      'esc': () => this.setState({ addForm : null })
     };
 
-    let { currentForm, selection } = this.state;
+    let data = cloneDeep(this.formData);
+    let currentForm = this.state.addForm ? null : this.currentForm;
+    console.log(data);
 
     return (
       <div id="oligrapherControlsContainer" style={{ height: '100%' }}>
@@ -70,62 +66,75 @@ export default class Root extends Component {
 
           { false && currentForm ? <div id="editFormScreen"></div> : null }
 
-          { currentForm == 'AddNodeForm' ? 
+          { this.state.addForm == 'AddNodeForm' ? 
             <AddNodeForm addNode={addNode} /> : null }
-          { currentForm == 'AddEdgeForm' ? 
-            <AddEdgeForm addEdge={addEdge} getGraph={getGraph} selection={selection} /> : null }
-          { currentForm == 'AddCaptionForm' ? 
+          { this.state.addForm == 'AddEdgeForm' ? 
+            <AddEdgeForm addEdge={addEdge} getGraph={getGraph} data={data} /> : null }
+          { this.state.addForm == 'AddCaptionForm' ? 
             <AddCaptionForm addCaption={addCaption} /> : null }
           { currentForm == 'UpdateNodeForm' ? 
-            <UpdateNodeForm updateNode={updateNode} selection={selection} /> : null }
+            <UpdateNodeForm updateNode={updateNode} data={data} /> : null }
           { currentForm == 'UpdateEdgeForm' ? 
-            <UpdateEdgeForm updateEdge={updateEdge} getGraph={getGraph} selection={selection} /> : null }
+            <UpdateEdgeForm updateEdge={updateEdge} getGraph={getGraph} data={data} /> : null }
           { currentForm == 'UpdateCaptionForm' ? 
-            <UpdateCaptionForm updateCaption={updateCaption} selection={selection} /> : null }
+            <UpdateCaptionForm updateCaption={updateCaption} data={data} /> : null }
         </HotKeys>
       </div>
     );
   }
 
-  _toggleNodeForm() {
-    let selected = this.props.oligrapher.getSelection().nodeIds;
+  componentWillMount() {
+    let config = this.props.config;
+    config.onSelection = (selection) => { 
+      let count = values(selection.nodes).length + values(selection.edes).length + values(selection.captions).length;
+      let addForm = (count > 0 ? null : this.state.addForm);
+      this.setState({ selection, addForm  });
+    };
+    this.oli = config.oligrapher.run(config.oligrapherRoot, config);
+  
+    this.getGraph = () => this.oli.export();
+    this.zoomIn = () => this.oli.zoomIn();
+    this.zoomOut = () => this.oli.zoomOut();
+    this.resetZoom = () => this.oli.resetZoom();
+    this.prune = () => this.oli.prune();
+    this.circleLayout = () => this.oli.circleLayout();
+    this.addNode = (node) => this.oli.addNode(node);
+    this.addEdge = (edge) => this.oli.addEdge(edge);
+    this.addCaption = (caption) => this.oli.addCaption(caption);
+    this.updateNode = (nodeId, data) => this.oli.updateNode(nodeId, data);
+    this.updateEdge = (edgeId, data) => this.oli.updateEdge(edgeId, data);
+    this.updateCaption = (captionId, data) => this.oli.updateCaption(captionId, data);
+  }
 
-    if (selected.length == 0) {
-      this._toggleForm('AddNodeForm', null);
-    } else if (selected.length == 1) {
-      let node = this.props.oligrapher.export().nodes[selected[0]];
-      this._toggleForm('UpdateNodeForm', node);
+  componentWillUpdate(nextProps, nextState) {
+    this._toggleEditFormsFromSelection(nextState.selection);
+  }
+
+  _toggleEditFormsFromSelection(selection) {
+    let { nodes, edges, captions } = selection;
+    let nodeCount = Object.keys(nodes).length;
+    let edgeCount = Object.keys(edges).length;
+    let captionCount = Object.keys(captions).length;
+
+    if (nodeCount == 1 && edgeCount == 0 && captionCount == 0) {
+      this._showEditForm('UpdateNodeForm', values(nodes)[0]);
+    } else if (nodeCount == 0 && edgeCount == 1 && captionCount == 0) {
+      this._showEditForm('UpdateEdgeForm', values(edges)[0]);
+    } else if (nodeCount == 0 && edgeCount == 0 && captionCount == 1) {
+      this._showEditForm('UpdateCaptionForm', values(captions)[0]);
+    } else {
+      this.currentForm = null;
+      this.formData = null;
     }
   }
 
-  _toggleEdgeForm() {
-    let selection = this.props.oligrapher.getSelection();
-    let data = this.props.oligrapher.export();
-    let edgeIds = selection.edgeIds;
-    let nodeIds = selection.nodeIds;
-
-    if (edgeIds.length == 0) {
-      let edge = (nodeIds.length == 1) ? { node1_id: nodeIds[0] } : null;
-      this._toggleForm('AddEdgeForm', edge);
-    } else if (edgeIds.length == 1) {
-      let edge = data.edges[edgeIds[0]];
-      this._toggleForm('UpdateEdgeForm', edge);
-    }
+  _showEditForm(type, data) {
+    this.currentForm = type;
+    this.formData = data;
   }
 
-  _toggleCaptionForm() {
-    let captionIds = this.props.oligrapher.getSelection().captionIds;
-
-    if (captionIds.length == 0) {
-      this._toggleForm('AddCaptionForm', null);
-    } else if (captionIds.length == 1) {
-      let caption = this.props.oligrapher.export().captions[captionIds[0]];
-      this._toggleForm('UpdateCaptionForm', caption);
-    }
-  }
-
-  _toggleForm(type, selection = null) {
-    let newForm = (this.state.currentForm == type ? null : type);
-    this.setState({ currentForm: newForm, selection });
+  _toggleAddForm(type) {
+    let newForm = (this.state.addForm == type ? null : type);
+    this.setState({ addForm: newForm });
   }
 }

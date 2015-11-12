@@ -10,7 +10,7 @@ export default class AddEdgeForm extends BaseComponent {
   }
 
   render() {
-    let node1Id = this.props.selection ? this.props.selection.node1_id : null;
+    let node1Id = this.props.data ? this.props.data.id : null;
 
     return (
       <div className="editForm">
