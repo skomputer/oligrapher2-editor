@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import BaseComponent from './BaseComponent';
+import { HotKeys } from 'react-hotkeys';
 import { values, sortBy } from 'lodash';
 
 export default class UpdateEdgeForm extends BaseComponent {
@@ -9,6 +10,14 @@ export default class UpdateEdgeForm extends BaseComponent {
   }
 
   render() {
+    const keyMap = { 
+      'esc': 'esc'
+    };
+
+    const keyHandlers = {
+      'esc': () => this.props.deselect()
+    };
+
     const scales = [
       [null, "Scale"],
       [1, "1x"],
@@ -21,29 +30,31 @@ export default class UpdateEdgeForm extends BaseComponent {
     const selectedScale = this.props.data ? display.scale : null;
 
     return (
-      <div className="editForm">
-        <h3>Edit Edge</h3>
-        <input 
-          type="text" 
-          placeholder="label" 
-          ref="label" 
-          defaultValue={display.label} 
-          onChange={this._apply} /><br />
-        <input 
-          type="checkbox" 
-          ref="arrow" 
-          defaultChecked={display.arrow} 
-          onChange={this._apply} /> arrow<br />
-        <input 
-          type="checkbox" 
-          ref="dash" 
-          defaultChecked={display.dash} 
-          onChange={this._apply} /> dash<br />
-        <select defaultValue={selectedScale} ref="scale" onChange={this._apply}>
-          { scales.map((scale, i) =>
-            <option key={i} value={scale[0]}>{scale[1]}</option>
-          ) }
-        </select>
+      <div className="editForm form-inline">
+        <HotKeys keyMap={keyMap} handlers={keyHandlers}>
+          <input 
+            type="checkbox" 
+            ref="arrow" 
+            defaultChecked={display.arrow} 
+            onChange={this._apply} /> arrow
+          &nbsp;&nbsp;<input 
+            type="checkbox" 
+            ref="dash" 
+            defaultChecked={display.dash} 
+            onChange={this._apply} /> dash
+          &nbsp;&nbsp;<input 
+            type="text" 
+            className="form-control input-sm"
+            placeholder="label" 
+            ref="label" 
+            defaultValue={display.label} 
+            onChange={this._apply} />
+          &nbsp;<select defaultValue={selectedScale} className="form-control input-sm" ref="scale" onChange={this._apply}>
+            { scales.map((scale, i) =>
+              <option key={i} value={scale[0]}>{scale[1]}</option>
+            ) }
+          </select>
+        </HotKeys>
       </div>
     );
   }

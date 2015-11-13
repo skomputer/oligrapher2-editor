@@ -11,7 +11,7 @@ var config = {
   },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'oligrapher.controls.js',
+    filename: 'oligrapher.editor.js',
     publicPath: 'http://localhost:9090/build'
   },
   plugins: [

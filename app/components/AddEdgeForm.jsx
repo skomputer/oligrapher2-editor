@@ -21,8 +21,6 @@ export default class AddEdgeForm extends BaseComponent {
       node2Id = null;
     }
 
-    console.log(node1Id, node2Id);
-
     const keyMap = { 
       'altN': ['alt+n', 'ctrl+n'],
       'esc': 'esc'
@@ -34,24 +32,22 @@ export default class AddEdgeForm extends BaseComponent {
     };
 
     return (
-      <div className="editForm">
+      <div id="addEdgeForm" className="editForm">
         <HotKeys keyMap={keyMap} handlers={keyHandlers}>
-          <h3>Add Edge</h3>
           <form onSubmit={this._handleSubmit}>
-            <select defaultValue={node1Id} ref="node1Id">
+            <select defaultValue={node1Id} className="form-control input-sm" ref="node1Id">
               <option value="">Node 1</option>
               { this.state.nodes.map((node, i) =>
                 <option key={i} value={node.id}>{node.display.name}</option>
               ) }
-            </select><br />
-            <select defaultValue={node2Id} ref="node2Id">
+            </select>
+            <select defaultValue={node2Id} className="form-control input-sm" ref="node2Id">
               <option value="">Node 2</option>
               { this.state.nodes.map((node, i) =>
                 <option key={i} value={node.id}>{node.display.name}</option>
               ) }
-            </select><br />
-            <input type="text" placeholder="label" ref="label" /><br />
-            <button type="submit">Add</button>
+            </select>
+            <input type="text" placeholder="label" className="form-control input-sm" ref="label" />
           </form>
         </HotKeys>
       </div>
@@ -68,18 +64,18 @@ export default class AddEdgeForm extends BaseComponent {
     this.setState({ nodes })
   }
 
-  componentDidMount() {
-
-  }
-
   _handleSubmit(e) {
     let node1Id = this.refs.node1Id.value;
     let node2Id = this.refs.node2Id.value;
     let label = this.refs.label.value.trim();
-    this.props.addEdge({ node1_id: node1Id, node2_id: node2Id, display: { label } });
-    this._clear();
+
+    if (node1Id && node2Id && label) {
+      this.props.addEdge({ node1_id: node1Id, node2_id: node2Id, display: { label } });
+      this._clear();
+      this.props.closeAddForm();      
+    }
+
     e.preventDefault();
-    this.props.closeAddForm();
   }
 
   _clear() {

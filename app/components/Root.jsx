@@ -3,20 +3,22 @@ import { HotKeys } from 'react-hotkeys';
 import BaseComponent from './BaseComponent';
 import ZoomButtons from './ZoomButtons';
 import LayoutButtons from './LayoutButtons';
+import EditButtons from './EditButtons';
 import AddNodeForm from './AddNodeForm';
 import AddEdgeForm from './AddEdgeForm';
 import AddCaptionForm from './AddCaptionForm';
 import UpdateNodeForm from './UpdateNodeForm';
 import UpdateEdgeForm from './UpdateEdgeForm';
 import UpdateCaptionForm from './UpdateCaptionForm';
+import HelpScreen from './HelpScreen';
 import { values, cloneDeep } from 'lodash';
 
 export default class Root extends BaseComponent {
   constructor(props) {
     super(props);
-    this.bindAll('_clearGraph', '_toggleAddNodeForm', '_toggleAddEdgeForm');
+    this.bindAll('_clearGraph', '_toggleAddEdgeForm', '_toggleHelpScreen');
     this.initSelection = { nodes: {}, edges: {}, captions: {} };
-    this.state = { addForm: null, selection: this.initSelection, graph: this.initSelection };
+    this.state = { helpScreen: false, addForm: null, selection: this.initSelection, graph: this.initSelection };
     this.currentForm = null;
     this.formData = null;
   }
@@ -32,12 +34,13 @@ export default class Root extends BaseComponent {
           deselectAll } = this;
 
     const keyMap = { 
-      'altZ': 'alt+z',
-      'altP': 'alt+p',
-      'altO': 'alt+o',
+      'altZ': ['alt+z', 'ctrl+z'],
+      'altP': ['alt+p', 'ctrl+p'],
+      'altO': ['alt+o', 'ctrl+o'],
       'altN': ['alt+n', 'ctrl+n'],
       'altE': ['alt+e', 'ctrl+e'],
-      'altC': 'alt+c',
+      'altC': ['alt+c', 'ctrl+c'],
+      'altH': ['alt+h', 'ctrl+h'],
       'esc': 'esc'
     };
 
@@ -45,9 +48,10 @@ export default class Root extends BaseComponent {
       'altZ': () => resetZoom(),
       'altP': () => prune(),
       'altO': () => circleLayout(),
-      'altN': () => this._toggleAddNodeForm(),
+      'altN': () => this._focusAddNodeInput(),
       'altE': () => this._toggleAddEdgeForm(),
       'altC': () => this._toggleAddCaptionForm(),
+      'altH': () => this._toggleHelpScreen(),
       'esc': () => { this.setState({ addForm : null }); this.deselectAll(); }
     };
 
@@ -56,26 +60,22 @@ export default class Root extends BaseComponent {
     let closeAddForm = () => this.setState({ addForm: null });
 
     return (
-      <div id="oligrapherControlsContainer" style={{ height: '100%' }}>
+      <div id="oligrapherEditorContainer" style={{ height: '100%' }}>
         <HotKeys focused={true} attach={window} keyMap={keyMap} handlers={keyHandlers}>
+          <ZoomButtons zoomIn={zoomIn} zoomOut={zoomOut} />
           <div id="buttons">
-            <button onClick={zoomIn}>zoom in</button>
-            <button onClick={zoomOut}>zoom out</button>   
-            <button onClick={resetZoom}>reset zoom</button>
-            <button onClick={prune}>prune</button>
-            <button onClick={circleLayout}>circle</button>
-            <button onClick={this._toggleAddNodeForm}>add node</button>
-            <button onClick={this._toggleAddEdgeForm}>add edge</button>
-            <button onClick={this._clearGraph}>clear</button>
-          </div>
-
-          { this.state.addForm == 'AddNodeForm' ? 
-            <AddNodeForm 
+            <LayoutButtons prune={prune} circleLayout={circleLayout} clearGraph={this._clearGraph} />
+            <button id="helpButton" className="btn btn-sm btn-default buttonGroup" onClick={this._toggleHelpScreen}>help</button>
+            <EditButtons 
               addNode={addNode}
               addEdge={addEdge}
               closeAddForm={closeAddForm} 
               source={this.props.config.dataSource} 
-              nodes={this.state.graph.nodes} /> : null }
+              nodes={this.state.graph.nodes}
+              addEdgeForm={this._toggleAddEdgeForm} 
+              ref="editButtons" />
+          </div>
+
           { this.state.addForm == 'AddEdgeForm' ? 
             <AddEdgeForm 
               addEdge={addEdge} 
@@ -89,16 +89,20 @@ export default class Root extends BaseComponent {
           { currentForm == 'UpdateNodeForm' ? 
             <UpdateNodeForm 
               updateNode={updateNode} 
-              data={data} /> : null }
+              data={data} 
+              deselect={this.deselectAll} /> : null }
           { currentForm == 'UpdateEdgeForm' ? 
             <UpdateEdgeForm 
               updateEdge={updateEdge} 
               getGraph={getGraph} 
-              data={data} /> : null }
+              data={data}
+              deselect={this.deselectAll} /> : null }
           { currentForm == 'UpdateCaptionForm' ? 
             <UpdateCaptionForm 
               updateCaption={updateCaption} 
-              data={data} /> : null }
+              data={data}
+              deselect={this.deselectAll} /> : null }
+          { this.state.helpScreen ? <HelpScreen source={this.props.config.dataSource} /> : null }
         </HotKeys>
       </div>
     );
@@ -166,10 +170,6 @@ export default class Root extends BaseComponent {
     this.formData = data;
   }
 
-  _toggleAddNodeForm() {
-    this._toggleAddForm('AddNodeForm');
-  }
-
   _toggleAddEdgeForm() {
     this._toggleAddForm('AddEdgeForm');
   }
@@ -180,7 +180,11 @@ export default class Root extends BaseComponent {
 
   _toggleAddForm(type) {
     let newForm = (this.state.addForm == type ? null : type);
-    this.setState({ addForm: newForm });
+    this.setState({ addForm: newForm, helpScreen: false });
+  }
+
+  _toggleHelpScreen() {
+    this.setState({ addForm: null, helpScreen: !this.state.helpScreen });
   }
 
   _clearGraph() {
@@ -190,5 +194,9 @@ export default class Root extends BaseComponent {
       this.formData = null;
       this.setState({ addForm: null })
     }
+  }
+
+  _focusAddNodeInput() {
+    this.refs.editButtons.refs.addNodeInput.refs.name.focus();
   }
 }

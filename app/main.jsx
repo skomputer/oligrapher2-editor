@@ -19,7 +19,7 @@ const main = {
   }
 }
 
-window.OligrapherControls = main;
+window.OligrapherEditor = main;
 
 export default main;
 

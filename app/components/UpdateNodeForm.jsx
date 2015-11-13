@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import BaseComponent from './BaseComponent';
+import { HotKeys } from 'react-hotkeys';
 
 export default class UpdateNodeForm extends BaseComponent {
   constructor(props) {
@@ -8,6 +9,14 @@ export default class UpdateNodeForm extends BaseComponent {
   }
 
   render() {
+    const keyMap = { 
+      'esc': 'esc'
+    };
+
+    const keyHandlers = {
+      'esc': () => this.props.deselect()
+    };
+
     const scales = [
       [1, "1x"],
       [1.5, "1.5x"],
@@ -18,25 +27,28 @@ export default class UpdateNodeForm extends BaseComponent {
     const selectedScale = this.props.data ? this.props.data.display.scale : null;
 
     return (
-      <div className="editForm">
-        <h3>Edit Node</h3>
-        <input 
-          type="text" 
-          placeholder="name" 
-          ref="name" 
-          defaultValue={this.props.data.display.name} 
-          onChange={this._apply} /><br />
-        <input 
-          type="text" 
-          placeholder="image URL" 
-          ref="image" 
-          defaultValue={this.props.data.display.image} 
-          onChange={this._apply} /><br />
-        <select defaultValue={selectedScale} ref="scale" onChange={this._apply}>
-          { scales.map((scale, i) =>
-            <option key={i} value={scale[0]}>{scale[1]}</option>
-          ) }
-        </select><br />
+      <div className="editForm form-inline">
+        <HotKeys keyMap={keyMap} handlers={keyHandlers}>
+          <input 
+            type="text" 
+            className="form-control input-sm"
+            placeholder="name" 
+            ref="name" 
+            defaultValue={this.props.data.display.name} 
+            onChange={this._apply} />
+          &nbsp;<input 
+            type="text" 
+            className="form-control input-sm"
+            placeholder="image URL" 
+            ref="image" 
+            defaultValue={this.props.data.display.image} 
+            onChange={this._apply} />
+          &nbsp;<select defaultValue={selectedScale} className="form-control input-sm" ref="scale" onChange={this._apply}>
+            { scales.map((scale, i) =>
+              <option key={i} value={scale[0]}>{scale[1]}</option>
+            ) }
+          </select>
+        </HotKeys>
       </div>
     );
   }

@@ -10,22 +10,18 @@ export default class AddCaptionForm extends BaseComponent {
 
   render() {
     const keyMap = { 
-      'altN': ['alt+n', 'ctrl+n'],
       'esc': 'esc'
     };
 
     const keyHandlers = {
-      'altN': () => this.props.closeAddForm(),
       'esc': () => this.props.closeAddForm()
     };
 
     return (
       <div id="addCaption" className="editForm">
         <HotKeys keyMap={keyMap} handlers={keyHandlers}>  
-          <h3>Add Caption</h3>
           <form onSubmit={this._handleSubmit}>
-            <input type="text" placeholder="text" ref="text" /><br />
-            <button type="submit">Add</button>
+            <input type="text" className="form-control input-sm" placeholder="add caption" ref="text" /><br />
           </form>
         </HotKeys>
       </div>

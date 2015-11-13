@@ -9,7 +9,7 @@ export default class AddNodeResult extends BaseComponent {
 
   render() {
     return (
-      <div className="addNodeResult"><a onClick={this._handleClick}>{this.props.node.display.name}</a></div>
+      <li className="addNodeResult"><a onClick={this._handleClick}>{this.props.node.display.name}</a></li>
     );
   }
 
