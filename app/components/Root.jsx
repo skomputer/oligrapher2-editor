@@ -11,7 +11,7 @@ import UpdateNodeForm from './UpdateNodeForm';
 import UpdateEdgeForm from './UpdateEdgeForm';
 import UpdateCaptionForm from './UpdateCaptionForm';
 import HelpScreen from './HelpScreen';
-import { values, cloneDeep } from 'lodash';
+import { values, cloneDeep, pick } from 'lodash';
 
 export default class Root extends BaseComponent {
   constructor(props) {
@@ -112,9 +112,9 @@ export default class Root extends BaseComponent {
     let config = this.props.config;
 
     config.onSelection = (selection) => { 
-      let count = values(selection.nodes).length + values(selection.edes).length + values(selection.captions).length;
+      let count = values(selection.nodeIds).length + values(selection.edgeIds).length + values(selection.captionIds).length;
       let addForm = (count > 0 ? null : this.state.addForm);
-      this.setState({ selection, addForm  });
+      this.setState({ selection, addForm });
     };
 
     config.onUpdate = (graph) => {
@@ -141,7 +141,14 @@ export default class Root extends BaseComponent {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    this._toggleEditFormsFromSelection(nextState.selection);
+    let { nodeIds, edgeIds, captionIds } = nextState.selection;
+    let graph = nextState.graph;
+    let selection = {
+      nodes: pick(graph.nodes, nodeIds),
+      edges: pick(graph.edges, edgeIds),
+      captions: pick(graph.captions, captionIds)
+    }
+    this._toggleEditFormsFromSelection(selection);
   }
 
   _toggleEditFormsFromSelection(selection) {
