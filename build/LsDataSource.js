@@ -50,7 +50,7 @@
 
   var LsDataSource = {
     name: 'LittleSis',
-    baseUrl: 'http://lilsis.local',
+    baseUrl: 'http://littlesis.org',
 
     findNodes: function(text, callback) {
       get(
