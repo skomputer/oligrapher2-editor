@@ -49,6 +49,7 @@
 }
 
 #addNodeInput {
+  position: relative;
   display: inline-block;
   margin-right: 10px;
 }
@@ -95,7 +96,7 @@
 #addEdgeForm {
   position: absolute;
   top: 50px;
-  left: 415px;
+  left: 430px;
   right: auto;
 }
 

@@ -72,7 +72,7 @@ export default class Root extends BaseComponent {
               closeAddForm={closeAddForm} 
               source={this.props.config.dataSource} 
               nodes={this.state.graph.nodes}
-              addEdgeForm={this._toggleAddEdgeForm} 
+              toggleAddEdgeForm={this._toggleAddEdgeForm} 
               ref="editButtons" />
           </div>
 

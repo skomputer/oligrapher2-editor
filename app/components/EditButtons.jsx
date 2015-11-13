@@ -13,7 +13,7 @@ export default class EditButtons extends Component {
           source={this.props.source} 
           nodes={this.props.nodes} 
           ref="addNodeInput" />
-        <button className="btn btn-sm btn-default" onClick={this.props.addEdgeForm}>add edge</button>
+        <button className="btn btn-sm btn-default" onClick={this.props.toggleAddEdgeForm}>add edge</button>
       </div>
     );
   }

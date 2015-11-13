@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import BaseComponent from './BaseComponent';
 import AddNodeResult from './AddNodeResult';
 import { HotKeys } from 'react-hotkeys';
@@ -27,8 +28,8 @@ export default class AddNodeInput extends BaseComponent {
         <HotKeys keyMap={keyMap} handlers={keyHandlers}>
           <form onSubmit={this._handleSubmit}>
             <input autoFocus type="text" className="form-control input-sm" placeholder="add node" ref="name" onChange={this._handleSearch} /><br />
-            { this.props.source && results.length > 0 ? 
-              <ul className="addNodeResults dropdown-menu">
+            { this.props.source ? 
+              <ul className="addNodeResults dropdown-menu" style={{ display: results.length > 0 ? "block" : "none" }} ref="results">
                 { results.map((node, i) =>
                   <AddNodeResult 
                     key={i} 
