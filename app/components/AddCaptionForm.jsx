@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import BaseComponent from './BaseComponent';
+import { HotKeys } from 'react-hotkeys';
 
 export default class AddCaptionForm extends BaseComponent {
   constructor(props) {
@@ -8,19 +9,34 @@ export default class AddCaptionForm extends BaseComponent {
   }
 
   render() {
+    const keyMap = { 
+      'altN': ['alt+n', 'ctrl+n'],
+      'esc': 'esc'
+    };
+
+    const keyHandlers = {
+      'altN': () => this.props.closeAddForm(),
+      'esc': () => this.props.closeAddForm()
+    };
+
     return (
       <div id="addCaption" className="editForm">
-        <h3>Add Caption</h3>
-        <input type="text" placeholder="name" ref="text" /><br />
-        <button onClick={this._handleSubmit}>Add</button>
+        <HotKeys keyMap={keyMap} handlers={keyHandlers}>  
+          <h3>Add Caption</h3>
+          <form onSubmit={this._handleSubmit}>
+            <input type="text" placeholder="text" ref="text" /><br />
+            <button type="submit">Add</button>
+          </form>
+        </HotKeys>
       </div>
     );
   }
 
-  _handleSubmit() {
+  _handleSubmit(e) {
     let text = this.refs.text.value.trim();
     this.props.addCaption({ display: { text } });
     this._clear();
+    e.preventDefault();
   }
 
   _clear() {

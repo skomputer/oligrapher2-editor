@@ -12,6 +12,10 @@ const main = {
     );
 
     return this;
+  },
+
+  graph: function() {
+    return this.rootInstance.oli;
   }
 }
 

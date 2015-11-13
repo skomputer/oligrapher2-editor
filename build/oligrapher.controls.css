@@ -1,3 +1,7 @@
+#oligrapherControlsContainer:focus, #oligrapherControlsContainer div:focus {
+  outline: none;
+}
+
 #buttons {
   position: absolute;
   top: 20px;
@@ -6,7 +10,7 @@
 
 .editForm {
   background: white;
-  width: 400px;
+  width: 300px;
   padding: 20px;
   border-radius: 5px;
   position: absolute;
@@ -23,15 +27,22 @@
 }
 
 .editForm input, .editForm select {
-  width: 300px;
+  width: 280px;
 }
 
-#editFormScreen {
-  background-color: rgba(192, 192, 192, 0.3);
-  z-index: 10;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
+.addNodeResults {
+  margin-top: 10px;
+}
+
+.addNodeInput {
+  margin-bottom: 5px;
+}
+
+.addNodeResult {
+  margin-top: 3px;
+}
+
+.addNodeResult {
+  color: #008;
+  cursor: pointer;
 }
