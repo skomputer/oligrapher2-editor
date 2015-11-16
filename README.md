@@ -183,3 +183,37 @@ Accepts the ID of a node to be added to a graph, an array of the graph's other n
    ]
 }
 ```
+
+User Guide
+----------
+
+Type a name in the "add node" box and press enter to add the node to the graph. Nodes from LittleSis matching the name you type will appear below; click on them to add them to the graph.
+
+### Editing Nodes and Edges
+
+CLICK a node or edge to select or deselect it.
+SHIFT+CLICK to select mutiple nodes and edges.
+
+Select a node or edge to view an editing form in the top-right corner of the map. Changes you make in the form will upate the node or edge immediately.
+
+### Buttons
+
+The CIRCLE button arranges nodes in a circle.
+The PRUNE button removes unconnected nodes.
+The CLEAR button deletes all content from the graph.
+
+### Shortcut Keys
+
+ALT+H toggles this user guide.
+ALT+D deletes selected nodes and edges.
+ALT+E adds an edge. Selected nodes will be auto-populated in the form.
+ALT+C adds a caption.
+
+If ALT keys interfere with your browser or operating system shortcuts, all of the above shortcuts will work with CTRL instead of ALT
+
+CTRL+"=" zooms in.
+CTRL+"-" zooms out.
+CTRL+0 resets zoom.
+
+ESC closes all forms.
+
