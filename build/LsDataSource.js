@@ -50,15 +50,13 @@
 
   var LsDataSource = {
     name: 'LittleSis',
-    baseUrl: 'http://littlesis.org',
+    baseUrl: 'http://lilsis.local',
 
     findNodes: function(text, callback) {
       get(
         this.baseUrl + '/maps/find_nodes', 
         { num: 12, desc: true, with_ids: true, q: text },
-        function(data) {
-          callback(data);
-        }
+        callback
       );
     },
 
@@ -66,11 +64,37 @@
       get(
         this.baseUrl + '/maps/node_with_edges',
         { node_id: nodeId, node_ids: nodeIds },
-        function(data) {
-          callback(data);
-        }
+        callback
       );
     },
+
+    getConnectedNodesOptions: {
+      category_id: {
+        1: "Position",
+        2: "Education",
+        3: "Membership",
+        4: "Family",
+        5: "Donation",
+        6: "Transaction",
+        7: "Lobbying",
+        8: "Social",
+        9: "Professional",
+        10: "Ownership",
+        11: "Hierarchy",
+        12: "Generic"
+      }
+    },
+
+    getConnectedNodes: function(nodeId, nodeIds, options, callback) {
+      options.node_id = nodeId;
+      options.node_ids = nodeIds;
+      
+      get(
+        this.baseUrl + '/maps/edges_with_nodes',
+        options,
+        callback
+      );
+    }
   };
 
   LsDataSource.noConflict = function() {

@@ -20,9 +20,9 @@ export default class AddNodeResult extends BaseComponent {
       let nodeIds = Object.keys(nodes);
 
       let callback = (data) => {
-        // console.log(data);
         this.props.addNode(data.node);
         data.edges.forEach(edge => this.props.addEdge(edge));
+        this.props.clearResults();
       };
 
       source.getNodeWithEdges(node.id, nodeIds, callback);

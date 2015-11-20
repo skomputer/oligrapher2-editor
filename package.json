@@ -7,7 +7,7 @@
     "dev": "npm run dev-build",
     "dev-build": "npm run && webpack-dev-server --devtool eval --progress --history-api-fallback --colors --hot --content-base build --port 9090 --config webpack.dev.config",
     "prod-build": "NODE_ENV=production webpack -p --display-modules --config webpack.prod.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "author": "Matthew Skomarovsky",
   "license": "gpl",
@@ -27,5 +27,28 @@
     "react-hotkeys": "^0.7.0",
     "webpack": "^1.12.4",
     "webpack-dev-server": "^1.12.1"
+  },
+  "devDependencies": {
+    "babel-jest": "^5.3.0",
+    "jest-cli": "^0.7.1",
+    "react-addons-test-utils": "^0.14.2"
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "moduleFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "testFileExtensions": [
+      "js",
+      "jsx"
+    ],
+    "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/node_modules/react-dom",
+      "<rootDir>/node_modules/react-addons-test-utils",
+      "<rootDir>/node_modules/fbjs",
+      "<rootDir>/node_modules/lodash"
+    ]
   }
 }

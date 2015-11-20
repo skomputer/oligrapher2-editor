@@ -22,7 +22,8 @@ export default class HelpScreen extends Component {
         <br />
         The CIRCLE button arranges nodes in a circle.<br />
         The PRUNE button removes unconnected nodes.<br />
-        The  button deletes all content from the graph.<br />
+        The CLEAR button deletes all content from the graph.<br />
+        The HELP button displays this user guide.<br />
         <br />
         <strong>Shortcut Keys</strong><br />
         <br />

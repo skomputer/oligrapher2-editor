@@ -1,9 +1,13 @@
 #oligrapherEditorContainer:focus, 
 #oligrapherEditorContainer div:focus, 
-#oligrapherEditorContainer button:focus,
+#oligrapherEditorContainer button:not(#zoomIn, #zoomOut):focus,
 #oligrapherEditorContainer input[type="checkbox"]:focus {
   outline: none;
-  background-color: #fff;
+  background-color: #f8f8f8;
+}
+
+#oligrapherEditorContainer button {
+  background-color: #f8f8f8;
 }
 
 #zoomButtons {
@@ -34,6 +38,17 @@
 }
 
 #zoomButtons button:focus {
+  outline: none;
+}
+
+button#toggleEditTools {
+  position: absolute;
+  top: 85px;
+  left: 15px;
+  border: 1px solid #ccc;
+  background-color: #fff;  
+  padding-top: 7px;
+  width: 32px;
   outline: none;
 }
 
@@ -74,10 +89,22 @@
 
 .editForm input:not([type='checkbox']), .editForm select {
   width: 150px;
-  margin-bottom: 5px;
 }
 
-.addNodeResults {
+#addEdgeForm input, #addEdgeForm select {
+  margin-bottom: 10px;
+}
+
+#addConnectedNodes {
+  margin-top: 40px;
+}
+
+#addConnectedNodesNum {
+  width: 40px;
+}
+
+#addConnectedNodes select {
+  margin-left: 5px;
 }
 
 .addNodeInput {

@@ -1,37 +1,29 @@
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { HotKeys } from 'react-hotkeys';
 import BaseComponent from './BaseComponent';
 import ZoomButtons from './ZoomButtons';
-import LayoutButtons from './LayoutButtons';
-import EditButtons from './EditButtons';
-import AddNodeForm from './AddNodeForm';
-import AddEdgeForm from './AddEdgeForm';
-import AddCaptionForm from './AddCaptionForm';
-import UpdateNodeForm from './UpdateNodeForm';
-import UpdateEdgeForm from './UpdateEdgeForm';
-import UpdateCaptionForm from './UpdateCaptionForm';
-import HelpScreen from './HelpScreen';
-import { values, cloneDeep, pick } from 'lodash';
+import EditTools from './EditTools';
+import { merge, values, cloneDeep, pick } from 'lodash';
 
 export default class Root extends BaseComponent {
   constructor(props) {
     super(props);
     this.bindAll('_clearGraph', '_toggleAddEdgeForm', '_toggleHelpScreen');
     this.initSelection = { nodes: {}, edges: {}, captions: {} };
-    this.state = { helpScreen: false, addForm: null, selection: this.initSelection, graph: this.initSelection };
+    this.state = { helpScreen: false, addForm: null, showEditTools: false, selection: this.initSelection, graph: this.initSelection };
     this.currentForm = null;
     this.formData = null;
   }
 
   render() {
-    let oli = this.props.oligrapher;
-    
-    let getGraph = () => this.oli.export();
+    let zoomIn, zoomOut, resetZoom;
 
-    let { zoomIn, zoomOut, resetZoom, prune, circleLayout, 
-          addNode, addEdge, addCaption, 
-          updateNode, updateEdge, updateCaption,
-          deselectAll } = this;
+    if (this.oli) {
+      zoomIn = () => this.oli.zoomIn();
+      zoomOut = () => this.oli.zoomOut();
+      resetZoom = () => this.oli.resetZoom();    
+    }
 
     const keyMap = { 
       'altZ': ['alt+z', 'ctrl+z'],
@@ -41,6 +33,7 @@ export default class Root extends BaseComponent {
       'altE': ['alt+e', 'ctrl+e'],
       'altC': ['alt+c', 'ctrl+c'],
       'altH': ['alt+h', 'ctrl+h'],
+      'altR': ['alt+r', 'ctrl+r'],
       'esc': 'esc'
     };
 
@@ -52,7 +45,8 @@ export default class Root extends BaseComponent {
       'altE': () => this._toggleAddEdgeForm(),
       'altC': () => this._toggleAddCaptionForm(),
       'altH': () => this._toggleHelpScreen(),
-      'esc': () => { this.setState({ addForm : null }); this.deselectAll(); }
+      'altR': () => this._toggleAddConnectedNodesForm(),
+      'esc': () => this._clearForms()
     };
 
     let data = cloneDeep(this.formData);
@@ -62,54 +56,44 @@ export default class Root extends BaseComponent {
     return (
       <div id="oligrapherEditorContainer" style={{ height: '100%' }}>
         <HotKeys focused={true} attach={window} keyMap={keyMap} handlers={keyHandlers}>
+          <div id="oligrapherEditorGraph" style={{ height: '100%' }}></div>
           <ZoomButtons zoomIn={zoomIn} zoomOut={zoomOut} />
-          <div id="buttons">
-            <LayoutButtons prune={prune} circleLayout={circleLayout} clearGraph={this._clearGraph} />
-            <button id="helpButton" className="btn btn-sm btn-default buttonGroup" onClick={this._toggleHelpScreen}>help</button>
-            <EditButtons 
-              addNode={addNode}
-              addEdge={addEdge}
+          { this.state.isEditor ? 
+            <button 
+              id="toggleEditTools" 
+              className="btn btn-sm btn-default" 
+              onClick={() => this._toggleEditTools()}>
+              <span className="glyphicon glyphicon-pencil"></span>
+            </button> : null }
+          { this.oli && this.state.showEditTools ? 
+            <EditTools
               closeAddForm={closeAddForm} 
-              source={this.props.config.dataSource} 
-              nodes={this.state.graph.nodes}
-              toggleAddEdgeForm={this._toggleAddEdgeForm} 
-              ref="editButtons" />
-          </div>
-
-          { this.state.addForm == 'AddEdgeForm' ? 
-            <AddEdgeForm 
-              addEdge={addEdge} 
-              getGraph={getGraph} 
+              source={this.props.dataSource} 
+              graph={this.state.graph}
+              toggleAddEdgeForm={this._toggleAddEdgeForm}
+              toggleHelpScreen={this._toggleHelpScreen}
+              clearGraph={this._clearGraph}
               closeAddForm={closeAddForm} 
-              data={data} /> : null }
-          { this.state.addForm == 'AddCaptionForm' ? 
-            <AddCaptionForm 
-              addCaption={addCaption} 
-              closeAddForm={closeAddForm} /> : null }
-          { currentForm == 'UpdateNodeForm' ? 
-            <UpdateNodeForm 
-              updateNode={updateNode} 
-              data={data} 
-              deselect={this.deselectAll} /> : null }
-          { currentForm == 'UpdateEdgeForm' ? 
-            <UpdateEdgeForm 
-              updateEdge={updateEdge} 
-              getGraph={getGraph} 
               data={data}
-              deselect={this.deselectAll} /> : null }
-          { currentForm == 'UpdateCaptionForm' ? 
-            <UpdateCaptionForm 
-              updateCaption={updateCaption} 
-              data={data}
-              deselect={this.deselectAll} /> : null }
-          { this.state.helpScreen ? <HelpScreen source={this.props.config.dataSource} /> : null }
+              graphApi={this.oli}
+              addForm={this.state.addForm}
+              currentForm={currentForm} 
+              helpScreen={this.state.helpScreen} /> : null }       
         </HotKeys>
       </div>
     );
   }
 
-  componentWillMount() {
-    let config = this.props.config;
+  componentDidMount() {
+    let element = ReactDOM.findDOMNode(this);
+    let graphElement = element.querySelector("#oligrapherEditorGraph");
+    graphElement.style.height = element.offsetHeight + "px";
+
+    let config = merge({ isEditor: false, isLocked: false }, { 
+      root: graphElement,
+      data: this.props.data,
+      isLocked: this.props.isLocked
+    });
 
     config.onSelection = (selection) => { 
       let count = values(selection.nodeIds).length + values(selection.edgeIds).length + values(selection.captionIds).length;
@@ -121,23 +105,8 @@ export default class Root extends BaseComponent {
       this.setState({ graph });
     }
 
-    this.oli = config.oligrapher.run(config.oligrapherRoot, config);
-    this.setState({ graph: this.oli.export() });
-  
-    this.getGraph = () => this.oli.export();
-    this.zoomIn = () => this.oli.zoomIn();
-    this.zoomOut = () => this.oli.zoomOut();
-    this.resetZoom = () => this.oli.resetZoom();
-    this.prune = () => this.oli.prune();
-    this.circleLayout = () => this.oli.circleLayout();
-    this.addNode = (node) => this.oli.addNode(node);
-    this.addEdge = (edge) => this.oli.addEdge(edge);
-    this.addCaption = (caption) => this.oli.addCaption(caption);
-    this.updateNode = (nodeId, data) => this.oli.updateNode(nodeId, data);
-    this.updateEdge = (edgeId, data) => this.oli.updateEdge(edgeId, data);
-    this.updateCaption = (captionId, data) => this.oli.updateCaption(captionId, data);
-    this.deselectAll = () => this.oli.deselectAll();
-    this.deleteAll = () => this.oli.deleteAll();
+    this.oli = new this.props.oligrapher(config);
+    this.setState({ graph: this.oli.export(), isEditor: this.props.isEditor });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -185,6 +154,10 @@ export default class Root extends BaseComponent {
     this._toggleAddForm('AddCaptionForm');
   }
 
+  _toggleAddConnectedNodesForm() {
+    this._toggleAddForm('AddConnectedNodesForm');
+  }
+
   _toggleAddForm(type) {
     let newForm = (this.state.addForm == type ? null : type);
     this.setState({ addForm: newForm, helpScreen: false });
@@ -196,14 +169,29 @@ export default class Root extends BaseComponent {
 
   _clearGraph() {
     if (confirm("Are you sure you want to clear the graph? This can't be undone!")) {
-      this.deleteAll();
+      this.oli.deleteAll();
       this.currentForm = null;
       this.formData = null;
       this.setState({ addForm: null })
     }
   }
 
+  _clearForms() {
+    this.setState({ addForm : null }); 
+    this.oli.deselectAll(); 
+    this.refs.editorTools.refs.editButtons.refs.addNodeInput.clear();    
+  }
+
+  _toggleEditor(value) {
+    this.setState({ isEditor: value })    
+  }
+
+  _toggleEditTools() {
+    this.oli.toggleEditor(!this.state.showEditTools);
+    this.setState({ showEditTools: !this.state.showEditTools });
+  }
+
   _focusAddNodeInput() {
-    this.refs.editButtons.refs.addNodeInput.refs.name.focus();
+    this.refs.editorTools.refs.editButtons.refs.addNodeInput.refs.name.focus();
   }
 }

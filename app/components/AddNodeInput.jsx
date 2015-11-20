@@ -20,7 +20,7 @@ export default class AddNodeInput extends BaseComponent {
     };
 
     const keyHandlers = {
-      'esc': () => this._clear()
+      'esc': () => this.clear()
     };
 
     return (
@@ -37,7 +37,8 @@ export default class AddNodeInput extends BaseComponent {
                     source={this.props.source} 
                     nodes={this.props.nodes} 
                     addNode={this.props.addNode}
-                    addEdge={this.props.addEdge} />
+                    addEdge={this.props.addEdge}
+                    clearResults={() => this.clear()} />
                   ) }
               </ul> : null }
           </form>
@@ -50,10 +51,15 @@ export default class AddNodeInput extends BaseComponent {
     window.clearTimeout(this.timeout);
   }
 
+  clear() {
+    this.refs.name.value = '';
+    this.setState({ results: [] });
+  }
+
   _handleSubmit(e) {
     let name = this.refs.name.value.trim();
     this.props.addNode({ display: { name } });
-    this._clear();
+    this.clear();
     this.props.closeAddForm();
     e.preventDefault();
   }
@@ -82,10 +88,5 @@ export default class AddNodeInput extends BaseComponent {
   _addResults(nodes) {
     // console.log(nodes);
     this.setState({ results: nodes });
-  }
-
-  _clear() {
-    this.refs.name.value = '';
-    this.setState({ results: [] });
   }
 }

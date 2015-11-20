@@ -7,6 +7,7 @@ export default class EditButtons extends Component {
     return (
       <div id="editButtons" className="form-inline buttonGroup">
         <AddNodeInput 
+          ref="addNodeInput"
           addNode={this.props.addNode}
           addEdge={this.props.addEdge}
           closeAddForm={this.props.closeAddForm} 

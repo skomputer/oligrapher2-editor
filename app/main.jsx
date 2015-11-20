@@ -1,26 +1,39 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './components/Root';
+import { merge } from 'lodash';
 
-const main = {
-  run: function(config) {
-    this.rootElement = config.root;
+export default class OligrapherEditor {
+  constructor(config) {
+    // editing enabled by default
+    config = merge({ isEditor: true }, config);
+
+    this.rootElement = config.domRoot;
 
     this.rootInstance = ReactDOM.render(
-      <Root config={config} />,
+      <Root 
+        oligrapher={config.oligrapher}
+        data={config.data}
+        dataSource={config.dataSource}
+        isEditor={config.isEditor} 
+        isLocked={config.isLocked} />,
       this.rootElement
     );
 
+    this.oligrapher = this.rootInstance.oli;
+
     return this;
-  },
-
-  graph: function() {
-    return this.rootInstance.oli;
   }
-}
 
-window.OligrapherEditor = main;
+  toggleEditor(value) {
+    this.rootInstance._toggleEditor(value);
+    this.oligrapher.toggleEditor(value);
+  }
 
-export default main;
+  toggleLocked(value) {
+    this.oligrapher.toggleLocked(value);
+  }
+};
 
+window.OligrapherEditor = OligrapherEditor;
 
