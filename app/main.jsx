@@ -16,7 +16,8 @@ export default class OligrapherEditor {
         data={config.data}
         dataSource={config.dataSource}
         isEditor={config.isEditor} 
-        isLocked={config.isLocked} />,
+        isLocked={config.isLocked} 
+        onUpdate={config.onUpdate} />,
       this.rootElement
     );
 

@@ -103,6 +103,10 @@ export default class Root extends BaseComponent {
 
     config.onUpdate = (graph) => {
       this.setState({ graph });
+
+      if (this.props.onUpdate) {
+        this.props.onUpdate(graph);
+      }
     }
 
     this.oli = new this.props.oligrapher(config);
