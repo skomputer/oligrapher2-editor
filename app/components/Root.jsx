@@ -58,7 +58,7 @@ export default class Root extends BaseComponent {
         <HotKeys focused={true} attach={window} keyMap={keyMap} handlers={keyHandlers}>
           <div id="oligrapherEditorGraph" style={{ height: '100%' }}></div>
           <ZoomButtons zoomIn={zoomIn} zoomOut={zoomOut} />
-          { this.state.isEditor ? 
+          { this.props.showEditButton && this.state.isEditor ? 
             <button 
               id="toggleEditTools" 
               className="btn btn-sm btn-default" 
@@ -89,10 +89,12 @@ export default class Root extends BaseComponent {
     let graphElement = element.querySelector("#oligrapherEditorGraph");
     graphElement.style.height = element.offsetHeight + "px";
 
-    let config = merge({ isEditor: false, isLocked: false }, { 
+    let config = merge({ isLocked: false }, { 
       root: graphElement,
       data: this.props.data,
-      isLocked: this.props.isLocked
+      isEditor: false,
+      isLocked: this.props.isLocked,
+      viewOnlyHighlighted: this.props.viewOnlyHighlighted
     });
 
     config.onSelection = (selection) => { 
@@ -190,9 +192,10 @@ export default class Root extends BaseComponent {
     this.setState({ isEditor: value })    
   }
 
-  _toggleEditTools() {
-    this.oli.toggleEditor(!this.state.showEditTools);
-    this.setState({ showEditTools: !this.state.showEditTools });
+  _toggleEditTools(value) {
+    value = (typeof value !== "undefined") ? value : !this.state.showEditTools;
+    this.oli.toggleEditor(value);
+    this.setState({ showEditTools: value });
   }
 
   _focusAddNodeInput() {

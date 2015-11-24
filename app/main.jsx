@@ -6,7 +6,8 @@ import { merge } from 'lodash';
 export default class OligrapherEditor {
   constructor(config) {
     // editing enabled by default
-    config = merge({ isEditor: true }, config);
+    // view cropped to highlights by default
+    config = merge({ isEditor: true, viewOnlyHighlighted: true, showEditButton: true }, config);
 
     this.rootElement = config.domRoot;
 
@@ -15,9 +16,11 @@ export default class OligrapherEditor {
         oligrapher={config.oligrapher}
         data={config.data}
         dataSource={config.dataSource}
-        isEditor={config.isEditor} 
-        isLocked={config.isLocked} 
-        onUpdate={config.onUpdate} />,
+        isEditor={config.isEditor}
+        isLocked={config.isLocked}
+        onUpdate={config.onUpdate}
+        showEditButton={config.showEditButton}
+        viewOnlyHighlighted={config.viewOnlyHighlighted} />,
       this.rootElement
     );
 
@@ -33,6 +36,10 @@ export default class OligrapherEditor {
 
   toggleLocked(value) {
     this.oligrapher.toggleLocked(value);
+  }
+
+  toggleEditTools(value) {
+    this.rootInstance._toggleEditTools(value);
   }
 };
 
