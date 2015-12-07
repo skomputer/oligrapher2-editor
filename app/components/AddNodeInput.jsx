@@ -86,7 +86,6 @@ export default class AddNodeInput extends BaseComponent {
   }
 
   _addResults(nodes) {
-    // console.log(nodes);
     this.setState({ results: nodes });
   }
 }

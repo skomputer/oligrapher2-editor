@@ -83,7 +83,7 @@ export default class EditTools extends Component {
             updateCaption={updateCaption} 
             data={data}
             deselect={deselectAll} /> : null }
-        { currentForm == 'UpdateNodeForm' ? 
+        { currentForm == 'UpdateNodeForm' && source && source.getConnectedNodes ? 
           <AddConnectedNodesForm
             data={data}
             source={source} 

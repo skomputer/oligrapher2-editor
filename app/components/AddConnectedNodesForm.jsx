@@ -36,13 +36,13 @@ export default class AddConnectedNodesForm extends BaseComponent {
 
   _renderOptions() {
     let options = this.props.source.getConnectedNodesOptions;
-    return Object.keys(options).map(key => {
+    return options ? Object.keys(options).map(key => {
       return (<select key={key} className="form-control input-sm" ref={key}>
         { Object.keys(options[key]).map(val => {
           return <option key={val} value={val}>{options[key][val]}</option>
         }) }
       </select>);
-    });
+    }) : null;
   }
 
   _handleSubmit(e) {
@@ -50,7 +50,6 @@ export default class AddConnectedNodesForm extends BaseComponent {
     let nodeId = this.props.data.id;
     let nodeIds = Object.keys(this.props.graph.nodes);
     let options = this._options();
-    console.log("options", options);
 
     this.props.source.getConnectedNodes(nodeId, nodeIds, options, (data) => {
       this.props.addSurroundingNodes(nodeId, data.nodes);

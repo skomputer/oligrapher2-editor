@@ -86,6 +86,7 @@
     },
 
     getConnectedNodes: function(nodeId, nodeIds, options, callback) {
+      options = options || {};
       options.node_id = nodeId;
       options.node_ids = nodeIds;
       
