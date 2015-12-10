@@ -20,7 +20,8 @@ export default class OligrapherEditor {
         isLocked={config.isLocked}
         onUpdate={config.onUpdate}
         showEditButton={config.showEditButton}
-        viewOnlyHighlighted={config.viewOnlyHighlighted} />,
+        viewOnlyHighlighted={config.viewOnlyHighlighted} 
+        graphHeight={config.graphHeight} />,
       this.rootElement
     );
 

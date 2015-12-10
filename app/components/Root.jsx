@@ -11,7 +11,7 @@ export default class Root extends BaseComponent {
     super(props);
     this.bindAll('_clearGraph', '_toggleAddEdgeForm', '_toggleHelpScreen');
     this.initSelection = { nodes: {}, edges: {}, captions: {} };
-    this.state = { helpScreen: false, addForm: null, showEditTools: false, selection: this.initSelection, graph: this.initSelection };
+    this.state = { helpScreen: false, addForm: null, showEditTools: props.isEditor, selection: this.initSelection, graph: this.initSelection };
     this.currentForm = null;
     this.formData = null;
   }
@@ -94,7 +94,8 @@ export default class Root extends BaseComponent {
       data: this.props.data,
       isEditor: false,
       isLocked: this.props.isLocked,
-      viewOnlyHighlighted: this.props.viewOnlyHighlighted
+      viewOnlyHighlighted: this.props.viewOnlyHighlighted,
+      graphHeight: this.props.graphHeight
     });
 
     config.onSelection = (selection) => { 
