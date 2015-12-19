@@ -12,16 +12,7 @@ export default class OligrapherEditor {
     this.rootElement = config.domRoot;
 
     this.rootInstance = ReactDOM.render(
-      <Root 
-        oligrapher={config.oligrapher}
-        data={config.data}
-        dataSource={config.dataSource}
-        isEditor={config.isEditor}
-        isLocked={config.isLocked}
-        onUpdate={config.onUpdate}
-        showEditButton={config.showEditButton}
-        viewOnlyHighlighted={config.viewOnlyHighlighted} 
-        graphHeight={config.graphHeight} />,
+      <Root {...config} />,
       this.rootElement
     );
 

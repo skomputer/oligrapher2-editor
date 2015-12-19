@@ -46,7 +46,7 @@ export default class EditTools extends Component {
             prune={prune} 
             circleLayout={circleLayout} 
             clearGraph={clearGraph} />
-          <button id="helpButton" className="btn btn-sm btn-default buttonGroup" onClick={toggleHelpScreen}>help</button>
+          { this.props.hideHelp ? null : <button id="helpButton" className="btn btn-sm btn-default buttonGroup" onClick={toggleHelpScreen}>help</button> }
           <EditButtons
             ref="editButtons"
             addNode={addNode}
@@ -91,7 +91,7 @@ export default class EditTools extends Component {
             graph={graph}
             addSurroundingNodes={addSurroundingNodes} 
             addEdge={addEdge} /> : null }
-        { helpScreen ? <HelpScreen source={source} /> : null }
+        { helpScreen && !this.props.hideHelp ? <HelpScreen source={source} /> : null }
       </div>
     );
   }

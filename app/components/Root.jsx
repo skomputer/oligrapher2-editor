@@ -67,6 +67,7 @@ export default class Root extends BaseComponent {
             </button> : null }
           { this.oli && this.state.showEditTools ? 
             <EditTools
+              ref="editTools"
               closeAddForm={closeAddForm} 
               source={this.props.dataSource} 
               graph={this.state.graph}
@@ -78,7 +79,8 @@ export default class Root extends BaseComponent {
               graphApi={this.oli}
               addForm={this.state.addForm}
               currentForm={currentForm} 
-              helpScreen={this.state.helpScreen} /> : null }       
+              helpScreen={this.state.helpScreen}
+              hideHelp={this.props.hideHelp} /> : null }       
         </HotKeys>
       </div>
     );
@@ -92,7 +94,7 @@ export default class Root extends BaseComponent {
     let config = merge({ isLocked: false }, { 
       root: graphElement,
       data: this.props.data,
-      isEditor: false,
+      isEditor: this.props.isEditor,
       isLocked: this.props.isLocked,
       viewOnlyHighlighted: this.props.viewOnlyHighlighted,
       graphHeight: this.props.graphHeight
@@ -186,7 +188,7 @@ export default class Root extends BaseComponent {
   _clearForms() {
     this.setState({ addForm : null }); 
     this.oli.deselectAll(); 
-    this.refs.editorTools.refs.editButtons.refs.addNodeInput.clear();    
+    this.refs.editTools.refs.editButtons.refs.addNodeInput.clear();    
   }
 
   _toggleEditor(value) {
@@ -200,6 +202,6 @@ export default class Root extends BaseComponent {
   }
 
   _focusAddNodeInput() {
-    this.refs.editorTools.refs.editButtons.refs.addNodeInput.refs.name.focus();
+    this.refs.editTools.refs.editButtons.refs.addNodeInput.refs.name.focus();
   }
 }

@@ -121,10 +121,6 @@ button#toggleEditTools {
 }
 
 #addEdgeForm {
-  position: absolute;
-  top: 50px;
-  left: 430px;
-  right: auto;
 }
 
 #addEdgeForm input, #addEdgeForm select {
