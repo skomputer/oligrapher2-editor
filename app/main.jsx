@@ -2,8 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './components/Root';
 import { merge } from 'lodash';
+require('./styles/oligrapher.editor.css');
 
-export default class OligrapherEditor {
+class OligrapherEditor {
   constructor(config) {
     // editing enabled by default
     // view cropped to highlights by default
@@ -35,5 +36,4 @@ export default class OligrapherEditor {
   }
 };
 
-window.OligrapherEditor = OligrapherEditor;
-
+module.exports = OligrapherEditor

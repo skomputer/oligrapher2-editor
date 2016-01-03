@@ -5,6 +5,7 @@ import BaseComponent from './BaseComponent';
 import ZoomButtons from './ZoomButtons';
 import EditTools from './EditTools';
 import { merge, values, cloneDeep, pick } from 'lodash';
+import Oligrapher from 'oligrapher2';
 
 export default class Root extends BaseComponent {
   constructor(props) {
@@ -114,7 +115,7 @@ export default class Root extends BaseComponent {
       }
     }
 
-    this.oli = new this.props.oligrapher(config);
+    this.oli = new Oligrapher(config);
     this.setState({ graph: this.oli.export(), isEditor: this.props.isEditor });
   }
 

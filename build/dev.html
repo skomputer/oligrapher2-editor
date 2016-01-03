@@ -4,12 +4,9 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/><meta charset="UTF-8">
     <title>Oligrapher 2 Editor</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="oligrapher.css" rel="stylesheet"/>
-    <link href="oligrapher.editor.css" rel="stylesheet"/>
     <script src="http://localhost:9090/webpack-dev-server.js"></script>
     <script src="http://localhost:9090/build/vendors.js"></script>
     <script src="http://localhost:9090/build/oligrapher.editor.js"></script>
-    <script src="oligrapher.min.js"></script>
     <script src="LsDataConverter.js"></script>
     <script src="LsDataSource.js"></script>
     <style>
@@ -25,7 +22,6 @@
 
       var config = {
         domRoot: editorDiv,
-        oligrapher: Oligrapher,
         data: data, 
         dataSource: LsDataSource,
         isEditor: true,
