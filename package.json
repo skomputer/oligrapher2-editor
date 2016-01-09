@@ -1,6 +1,6 @@
 {
   "name": "oligrapher2-editor",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "Editing UI for Oligrapher 2",
   "main": "build/oligrapher.editor.js",
   "scripts": {

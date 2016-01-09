@@ -16585,15 +16585,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	 * @typechecks
 	 */
 
+	/* eslint-disable fb-www/typeof-undefined */
+
 	/**
 	 * Same as document.activeElement but wraps in a try-catch block. In IE it is
 	 * not safe to call document.activeElement if there is nothing focused.
 	 *
-	 * The activeElement will be null only if the document body is not yet defined.
+	 * The activeElement will be null only if the document or document body is not
+	 * yet defined.
 	 */
-	"use strict";
+	'use strict';
 
 	function getActiveElement() /*?DOMElement*/{
+	  if (typeof document === 'undefined') {
+	    return null;
+	  }
 	  try {
 	    return document.activeElement || document.body;
 	  } catch (e) {
@@ -18076,7 +18082,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	module.exports = '0.14.5';
+	module.exports = '0.14.6';
 
 /***/ },
 /* 143 */
@@ -56945,8 +56951,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		 * This source code is licensed under the BSD-style license found in the
 		 * LICENSE file in the root directory of this source tree. An additional grant
 		 * of patent rights can be found in the PATENTS file in the same directory.
-		 *
-		 * @providesModule invariant
 		 */
 
 		'use strict';
@@ -56980,9 +56984,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		      var args = [a, b, c, d, e, f];
 		      var argIndex = 0;
 		      error = new Error(
-		        'Invariant Violation: ' +
 		        format.replace(/%s/g, function() { return args[argIndex++]; })
 		      );
+		      error.name = 'Invariant Violation';
 		    }
 
 		    error.framesToPop = 1; // we don't care about invariant's own frame
@@ -74400,13 +74404,6 @@ return /******/ (function(modules) { // webpackBootstrap
 		            fill: 'none',
 		            markerStart: sp.markerStart,
 		            markerEnd: sp.markerEnd }),
-		          this.state.label ? _react2['default'].createElement('text', {
-		            className: e.display.url ? "link" : null,
-		            dy: sp.dy,
-		            fill: sp.textColor,
-		            textAnchor: 'middle',
-		            onClick: this._handleTextClick,
-		            dangerouslySetInnerHTML: sp.textPath }) : null,
 		          _react2['default'].createElement('path', {
 		            className: 'handle edge-handle edgeSelect',
 		            d: sp.curve,
@@ -74414,7 +74411,14 @@ return /******/ (function(modules) { // webpackBootstrap
 		            strokeOpacity: '0',
 		            strokeWidth: width + 20,
 		            fill: 'none',
-		            onClick: this._handleClick })
+		            onClick: this._handleClick }),
+		          this.state.label ? _react2['default'].createElement('text', {
+		            className: (0, _classnames2['default'])({ link: e.display.url, handle: true }),
+		            dy: -5 - width / 2,
+		            fill: sp.textColor,
+		            textAnchor: 'middle',
+		            onClick: this._handleTextClick,
+		            dangerouslySetInnerHTML: sp.textPath }) : null
 		        )
 		      );
 		    }
@@ -78286,7 +78290,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 		// module
-		exports.push([module.id, "#oligrapherContainer:focus, #oligrapherContainer :focus {\n  outline: none;\n}\n\na.nodeLabel {\n  cursor: pointer;\n}\n\na.nodeLabel:hover {\n  text-decoration: none;\n}\n\na.nodeLabel text tspan {\n  font-family: Helvetica, Arial, sans-serif;  \n}\n\n.edge text {\n  font-family: Helvetica, Arial, sans-serif;  \n}\n\n#oligrapherContainer:hover .edge text {\n  display: none;\n}\n\n#oligrapherContainer:hover .edge:hover text, .edge.selected text, .edge.highlighted text {\n  display: inline;\n}\n\n.edge:hover text.link {\n  cursor: pointer;\n}\n\n.caption {\n  font-family: Helvetica, Arial, sans-serif;\n  cursor: default;\n}", ""]);
+		exports.push([module.id, "#oligrapherContainer:focus, #oligrapherContainer :focus {\n  outline: none;\n}\n\na.nodeLabel {\n  cursor: pointer;\n}\n\na.nodeLabel:hover {\n  text-decoration: none;\n}\n\na.nodeLabel text tspan {\n  font-family: Helvetica, Arial, sans-serif;  \n}\n\n.edge text {\n  font-family: Helvetica, Arial, sans-serif;  \n}\n\n#oligrapherContainer:hover .edge:not(.dragging) text {\n  display: none;\n}\n\n#oligrapherContainer:hover .edge:hover text, .edge.selected text, .edge.highlighted text {\n  display: inline;\n}\n\n.edge:hover text.link {\n  cursor: pointer;\n}\n\n.caption {\n  font-family: Helvetica, Arial, sans-serif;\n  cursor: default;\n}", ""]);
 
 		// exports
 
