@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Root from './components/Root';
 import { merge } from 'lodash';
+require('./styles/bootstrap-3.3.6.css');
 require('./styles/oligrapher.editor.css');
 
 class OligrapherEditor {
