@@ -8,7 +8,6 @@ var config = {
   ],
   output: {
     path: 'build',
-    filename: '/oligrapher.editor.min.js',
     library: 'OligrapherEditor',
     libraryTarget: 'umd'
   },
