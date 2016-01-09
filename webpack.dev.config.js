@@ -23,7 +23,7 @@ var config = {
   module: {
     loaders: [
       { test: /\.jsx?$/,
-        exclude: [node_modules],
+        exclude: /node_modules\/(?!oligrapher)/i,
         loaders: ['react-hot', 'babel'] },
       { test: /\.css$/, 
         loader: "style-loader!css-loader" },

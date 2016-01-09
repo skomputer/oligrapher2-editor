@@ -12,7 +12,14 @@ export default class Root extends BaseComponent {
     super(props);
     this.bindAll('_clearGraph', '_toggleAddEdgeForm', '_toggleHelpScreen');
     this.initSelection = { nodes: {}, edges: {}, captions: {} };
-    this.state = { helpScreen: false, addForm: null, showEditTools: props.isEditor, selection: this.initSelection, graph: this.initSelection };
+    this.state = { 
+      helpScreen: false, 
+      addForm: null,
+      isEditor: props.isEditor,
+      showEditTools: props.isEditor, 
+      selection: this.initSelection, 
+      graph: props.data || this.initSelection 
+    };
     this.currentForm = null;
     this.formData = null;
   }
@@ -116,7 +123,6 @@ export default class Root extends BaseComponent {
     }
 
     this.oli = new Oligrapher(config);
-    this.setState({ graph: this.oli.export(), isEditor: this.props.isEditor });
   }
 
   componentWillUpdate(nextProps, nextState) {

@@ -6,7 +6,7 @@
   "scripts": {
     "dev-build": "npm run && webpack-dev-server --devtool eval --progress --history-api-fallback --colors --hot --content-base build --port 9090 --config webpack.dev.config",
     "prod-build": "webpack --display-modules --config webpack.prod.config.js --output-filename=oligrapher.editor.js",
-    "min-build": "webpack -p --display-modules --config webpack.prod.config.js --output-filename=oligrapher.editor.min.js",
+    "min-build": "webpack -p --optimize-dedupe --display-modules --config webpack.prod.config.js --output-filename=oligrapher.editor.min.js",
     "build-all": "npm run prod-build && npm run min-build",
     "test": "jest"
   },
